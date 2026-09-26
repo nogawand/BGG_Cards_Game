@@ -1,0 +1,236 @@
+:root {
+  --mat: #1c2b4a;
+  --mat-dark: #131e36;
+  --belt: #f1eee6;
+  --gi-red: #b8434f;
+  --gold: #d9a441;
+  --ink: #10182b;
+  --dim: #8d9ab8;
+}
+
+.app {
+  direction: rtl;
+  min-height: 100vh;
+  padding: 20px 14px 40px;
+  background: var(--mat-dark);
+  color: var(--belt);
+  font-family: "Heebo", "Arial Hebrew", Arial, sans-serif;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+
+h1 {
+  margin: 0 auto 18px;
+  max-width: 900px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.player,
+.table {
+  background: var(--mat);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.player-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.player-name {
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.position {
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+
+.hand {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 150px));
+  justify-content: center;
+  gap: 8px;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 1131 / 1600;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.card.unplayable {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.card.interactive {
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.card.interactive:hover {
+  transform: translateY(-4px);
+}
+
+.card.interactive:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.score {
+  background: var(--belt);
+  color: var(--ink);
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+
+.card-points {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.status {
+  text-align: center;
+  min-height: 3.2em;
+}
+
+.status-turn {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--gold);
+}
+
+.status-log {
+  color: var(--dim);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.new-game {
+  margin-top: 10px;
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: var(--gold);
+  color: var(--ink);
+  font: 800 1rem "Heebo", Arial, sans-serif;
+}
+
+/* Face-down card: dark belt-stripe pattern, clearly different from a face-up card */
+.card-back {
+  aspect-ratio: 1131 / 1600;
+  border-radius: 8px;
+  border: 2px solid var(--belt);
+  background: repeating-linear-gradient(45deg, var(--gi-red) 0 8px, var(--mat-dark) 8px 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.card-back span {
+  background: var(--mat-dark);
+  color: var(--belt);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.table {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.pile {
+  text-align: center;
+}
+
+.pile-card {
+  width: 84px;
+  margin: 0 auto 8px;
+}
+
+.pile-card .card-points {
+  font-size: 0.65rem;
+  min-width: 18px;
+  height: 18px;
+  top: 5px;
+  left: 5px;
+}
+
+.pile-card .card-back span {
+  font-size: 0.62rem;
+  padding: 2px 6px;
+}
+
+.card-back.pile-empty {
+  background: var(--mat-dark);
+  border-style: dashed;
+  border-color: var(--dim);
+}
+
+.card-back.pile-empty span {
+  background: transparent;
+  color: var(--dim);
+}
+
+.pile-count {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.pile-label {
+  color: var(--dim);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 520px) {
+  .hand {
+    grid-template-columns: repeat(3, minmax(0, 150px));
+  }
+}
