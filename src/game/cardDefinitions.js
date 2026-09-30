@@ -90,8 +90,8 @@ export const CARD_DEFINITIONS = Object.freeze({
     canPlay: (myState, opponentState) =>
       myState === Position.ON_BACK && opponentState === Position.SIDE_CONTROL,
     getResult: () => ({
-      myState: Position.KNEES,
-      opponentState: Position.KNEES,
+      myState: Position.GUARD_CONTROL,
+      opponentState: Position.IN_GUARD,
     }),
   },
   ESCAPE_MOUNT: {
@@ -105,7 +105,7 @@ export const CARD_DEFINITIONS = Object.freeze({
       myState === Position.ON_BACK && opponentState === Position.MOUNT_CONTROL,
     getResult: () => ({
       myState: Position.KNEES,
-      opponentState: Position.KNEES,
+      opponentState: Position.ON_BACK,
     }),
   },
   GUARD: {

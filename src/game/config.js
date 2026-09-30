@@ -16,7 +16,18 @@ export const Position = Object.freeze({
 
 // ---------- Numbers and IDs ----------
 export const HAND_SIZE = 5;
-export const COPIES_PER_CARD = 8;
+export const CARD_COPIES = Object.freeze({
+  TAKEDOWN: 10,  
+  MOUNT: 6,
+  SIDE_CONTROL: 8,
+  ESCAPE_SIDE: 6,
+  ESCAPE_MOUNT: 6,
+  GUARD: 8,
+  GUARD_ESCAPE: 6,
+  SWEEP: 6,
+  STAND_UP_ATTACK: 6,  
+  STAND_UP_DEFENSE: 6, 
+});
 export const HUMAN_ID = "P1";
 export const COMPUTER_ID = "P2";
 export const COMPUTER_DELAY_MS = 1000;

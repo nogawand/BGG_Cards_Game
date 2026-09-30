@@ -1,4 +1,4 @@
-import { Position, HAND_SIZE, COPIES_PER_CARD, HUMAN_ID, COMPUTER_ID } from "./config";
+import { Position, HAND_SIZE, CARD_COPIES, HUMAN_ID, COMPUTER_ID } from "./config";
 import { UI_TEXT } from "./config";
 import { CARD_DEFINITIONS } from "./cardDefinitions";
 
@@ -11,7 +11,10 @@ export function createCard(definitionId) {
 export function createDeck() {
   const deck = [];
   for (const definitionId of Object.keys(CARD_DEFINITIONS)) {
-    for (let i = 0; i < COPIES_PER_CARD; i++) deck.push(createCard(definitionId));
+    const copies = CARD_COPIES[definitionId] || 8; 
+    for (let i = 0; i < copies; i++) {
+      deck.push(createCard(definitionId));
+    }
   }
   return deck;
 }
