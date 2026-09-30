@@ -1,7 +1,7 @@
 import Hand from "./Hand";
 import { POSITION_LABELS, UI_TEXT, HUMAN_ID } from "../game/config";
 
-export default function PlayerArea({ player, opponent, gameState, onPlayCard }) {
+export default function PlayerArea({ player, opponent, gameState, onPlayCard, onScramble }) {
   const hidden = player.id !== HUMAN_ID;
   const isPlayersTurn = !gameState.winnerId && gameState.currentPlayerId === player.id;
 
@@ -25,7 +25,6 @@ export default function PlayerArea({ player, opponent, gameState, onPlayCard }) 
 
   return (
     <section>
-      {/* if computer - cards and so details, else the opposite. */}
       {hidden ? (
         <>
           {playerHand}
@@ -37,7 +36,15 @@ export default function PlayerArea({ player, opponent, gameState, onPlayCard }) 
           <div className="you-hand-container">
             {playerHand}
           </div>
-          
+          <button 
+  onClick={onScramble}
+  disabled={player.scrambleCount >= 3 || !isPlayersTurn}
+  style={{ marginTop: '8px' }}
+>
+  {player.scrambleCount >= 3 
+    ? "נגמרו החלפות היד" 
+    : `החלף יד (סקראמבל ${player.scrambleCount}/3)`}
+</button>
         </>
       )}
     </section>

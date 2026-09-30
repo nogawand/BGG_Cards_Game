@@ -1,6 +1,6 @@
-import { Position, HAND_SIZE, CARD_COPIES, HUMAN_ID, COMPUTER_ID } from "./config";
-import { UI_TEXT } from "./config";
-import { CARD_DEFINITIONS } from "./cardDefinitions";
+import { Position, HAND_SIZE, CARD_COPIES, HUMAN_ID, COMPUTER_ID } from "./config.js";
+import { UI_TEXT } from "./config.js";
+import { CARD_DEFINITIONS } from "./cardDefinitions.js";
 
 let nextCardInstanceId = 1;
 
@@ -48,10 +48,8 @@ export function createPlayer(id, name) {
     hand: [],
     position: Position.STANDING,
     score: 0,
-    // How many of the opponent's completed turns the current MOUNT_CONTROL
-    // has survived - reset to 0 each time mount is freshly entered. Used to
-    // delay the recurring mount bonus - see gameActions.takeTurnAction.
     mountControlRoundsHeld: 0,
+    scrambleCount: 0,
   };
 }
 

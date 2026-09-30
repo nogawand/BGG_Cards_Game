@@ -135,3 +135,17 @@ export function chooseComputerCard(gameState) {
   }
   return pickRandom(player.hand) ?? null;
 }
+export function scrambleHand(gameState, playerId) {
+  const player = gameState.players.find((p) => p.id === playerId);
+  if (!player || player.scrambleCount >= 3) return false;
+
+  gameState.discardPile.push(...player.hand);
+  player.hand = [];
+
+  drawCards(gameState, player, HAND_SIZE);
+  
+  player.scrambleCount += 1;
+  gameState.lastActionText = `${player.name} ביצע סקראמבל והחליף את היד! (${player.scrambleCount}/3)`;
+  
+  return true;
+}

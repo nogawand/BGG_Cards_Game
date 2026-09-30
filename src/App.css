@@ -22,30 +22,23 @@ html, body, #root {
 }
 
 .app {
-  /* ============================================================
-     Fluid vertical budget: every size below that affects the
-     STACKED height of the page (paddings, gaps, card height, badge
-     sizes, the status block) is a clamp() tied to dvh, not a fixed
-     px value. That means the whole board scales down together as
-     the viewport gets shorter, instead of any one fixed-height
-     piece refusing to shrink and forcing a scrollbar or a clipped
-     edge. Widen/narrow these clamp ranges to taste - the layout
-     stays consistent as long as everything stays dvh-driven.
-     ============================================================ */
-  --gap: clamp(4px, 1.1dvh, 14px);
-  --pad-y: clamp(4px, 0.9dvh, 14px);
-  --pad-x: clamp(8px, 2vw, 16px);
-  --title-size: clamp(0.85rem, 2.3dvh, 1.5rem);
-  --name-size: clamp(0.8rem, 1.9dvh, 1.15rem);
-  --badge-size: clamp(0.65rem, 1.5dvh, 0.95rem);
-  --badge-pad-y: clamp(2px, 0.5dvh, 4px);
-  --badge-pad-x: clamp(6px, 1.6dvw, 12px);
-  --card-h: clamp(46px, 15dvh, 150px);
-  --pile-h: clamp(32px, 8dvh, 84px);
-  --pile-count-size: clamp(1rem, 2.6dvh, 2rem);
-  --pile-label-size: clamp(0.6rem, 1.3dvh, 0.85rem);
-  --status-size: clamp(0.85rem, 2dvh, 1.1rem);
-  --status-log-size: clamp(0.7rem, 1.5dvh, 0.9rem);
+  --gap: clamp(2px, 0.6dvh, 8px);
+  --pad-y: clamp(2px, 0.5dvh, 8px);
+  --pad-x: clamp(6px, 1.5vw, 12px);
+  --title-size: clamp(0.8rem, 2dvh, 1.3rem);
+  --name-size: clamp(0.75rem, 1.6dvh, 1rem);
+  --badge-size: clamp(0.6rem, 1.3dvh, 0.85rem);
+  --badge-pad-y: clamp(2px, 0.4dvh, 3px);
+  --badge-pad-x: clamp(4px, 1.2dvw, 10px);
+  
+  --card-h: clamp(80px, 22dvh, 180px); 
+  --pile-h: clamp(80px, 18dvh, 140px);
+
+
+  --pile-count-size: clamp(0.9rem, 2.2dvh, 1.6rem);
+  --pile-label-size: clamp(0.55rem, 1.1dvh, 0.75rem);
+  --status-size: clamp(0.8rem, 1.8dvh, 1rem);
+  --status-log-size: clamp(0.65rem, 1.3dvh, 0.8rem);
 
   direction: rtl;
   position: relative;
@@ -87,8 +80,7 @@ main {
   overflow-y: auto;
 }
 
-.player,
-.table {
+.player,.table{
   background: var(--mat);
   border-radius: 10px;
   padding: var(--pad-y) var(--pad-x);

@@ -1,4 +1,4 @@
-import { Position, CARD_TEXT, CARD_POINTS } from "./config";
+import { Position, CARD_TEXT, CARD_POINTS } from "./config.js";
 
 import takedownImg from "../assets/cards/takedown.jpg";
 import mountImg from "../assets/cards/mount.jpg";
