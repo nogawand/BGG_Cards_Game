@@ -8,69 +8,173 @@
   --dim: #8d9ab8;
 }
 
+/* Lock the page itself so only .app's own layout is ever in play - no
+   page-level scrollbar, no address-bar-driven height jumps. */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 .app {
+  /* ============================================================
+     Fluid vertical budget: every size below that affects the
+     STACKED height of the page (paddings, gaps, card height, badge
+     sizes, the status block) is a clamp() tied to dvh, not a fixed
+     px value. That means the whole board scales down together as
+     the viewport gets shorter, instead of any one fixed-height
+     piece refusing to shrink and forcing a scrollbar or a clipped
+     edge. Widen/narrow these clamp ranges to taste - the layout
+     stays consistent as long as everything stays dvh-driven.
+     ============================================================ */
+  --gap: clamp(4px, 1.1dvh, 14px);
+  --pad-y: clamp(4px, 0.9dvh, 14px);
+  --pad-x: clamp(8px, 2vw, 16px);
+  --title-size: clamp(0.85rem, 2.3dvh, 1.5rem);
+  --name-size: clamp(0.8rem, 1.9dvh, 1.15rem);
+  --badge-size: clamp(0.65rem, 1.5dvh, 0.95rem);
+  --badge-pad-y: clamp(2px, 0.5dvh, 4px);
+  --badge-pad-x: clamp(6px, 1.6dvw, 12px);
+  --card-h: clamp(46px, 15dvh, 150px);
+  --pile-h: clamp(32px, 8dvh, 84px);
+  --pile-count-size: clamp(1rem, 2.6dvh, 2rem);
+  --pile-label-size: clamp(0.6rem, 1.3dvh, 0.85rem);
+  --status-size: clamp(0.85rem, 2dvh, 1.1rem);
+  --status-log-size: clamp(0.7rem, 1.5dvh, 0.9rem);
+
   direction: rtl;
-  min-height: 100vh;
-  padding: 20px 14px 40px;
+  position: relative;
+  height: 100dvh;
+  width: 100vw;
+  max-width: 100%;
+  overflow: hidden;
+  padding: var(--pad-y) var(--pad-x);
   background: var(--mat-dark);
   color: var(--belt);
   font-family: "Heebo", "Arial Hebrew", Arial, sans-serif;
-}
 
-main {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1 {
-  margin: 0 auto 18px;
-  max-width: 900px;
-  font-size: 1.5rem;
+  margin: 0 0 var(--gap) 0;
+  font-size: var(--title-size);
   font-weight: 800;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+main {
+  width: 100%;
+  max-width: 900px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap);
+  /* Safety net, not the primary mechanism: the clamp()s above are sized so
+     everything fits without this ever engaging on realistic screens. If an
+     extreme viewport still doesn't fit, a quiet scroll here is better than
+     silently clipped/hidden content. */
+  overflow-y: auto;
 }
 
 .player,
 .table {
   background: var(--mat);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: var(--pad-y) var(--pad-x);
+  flex-shrink: 0;
 }
 
 .player-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  gap: 12px;
+  margin-bottom: var(--gap);
+  gap: var(--gap);
   flex-wrap: wrap;
+  min-width: 0;
+}
+
+.player-head > * {
+  min-width: 0;
+}
+
+/* The computer's row mirrors the human's row (row-reverse), so its position
+   and score badges land on the opposite side from the human's - much easier
+   to tell "whose status is whose" at a glance than two identically-ordered
+   rows. */
+.player.opponent .player-head {
+  flex-direction: row-reverse;
 }
 
 .player-name {
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: var(--name-size);
 }
 
 .position {
   background: var(--gold);
   color: var(--ink);
   font-weight: 800;
-  padding: 4px 12px;
+  padding: var(--badge-pad-y) var(--badge-pad-x);
   border-radius: 999px;
-  font-size: 0.95rem;
+  font-size: var(--badge-size);
+  white-space: nowrap;
 }
 
+.score {
+  background: var(--belt);
+  color: var(--ink);
+  font-weight: 800;
+  padding: var(--badge-pad-y) var(--badge-pad-x);
+  border-radius: 999px;
+  font-size: var(--badge-size);
+  white-space: nowrap;
+}
+
+/* A single row of up to 5 cards. Height comes from --card-h (dvh-driven);
+   width follows from the card's own aspect-ratio, then gets capped by
+   max-width so 5 of them can never overflow the row horizontally either -
+   whichever dimension is tighter wins, so the cards shrink to fit both the
+   available height AND the available width. */
 .hand {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 150px));
+  display: flex;
+  flex-wrap: nowrap;
   justify-content: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: clamp(3px, 1dvw, 8px);
+  width: 100%;
+}
+/*The our player cards*/
+.you-hand-container .card { 
+  height: 190px; 
+}
+
+.card,
+.card-back {
+  aspect-ratio: 1131 / 1600;
+  height: var(--card-h);
+  width: auto;
+  flex: 0 1 auto;
+}
+
+.hand .card,
+.hand .card-back {
+  max-width: calc((100% - 4 * clamp(3px, 1dvw, 8px)) / 5);
 }
 
 .card {
   position: relative;
-  aspect-ratio: 1131 / 1600;
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
@@ -103,64 +207,55 @@ h1 {
   outline-offset: 2px;
 }
 
-.score {
-  background: var(--belt);
-  color: var(--ink);
-  font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.95rem;
-}
-
 .card-points {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  min-width: 24px;
-  height: 24px;
-  padding: 0 6px;
+  top: 6%;
+  left: 6%;
+  min-width: 20%;
+  height: 15%;
+  padding: 0 4%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--gold);
   color: var(--ink);
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: clamp(0.55rem, 1.6dvh, 0.85rem);
   border-radius: 999px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .status {
   text-align: center;
-  min-height: 3.2em;
+  flex-shrink: 0;
 }
 
 .status-turn {
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: var(--status-size);
   color: var(--gold);
 }
 
 .status-log {
   color: var(--dim);
-  font-size: 0.9rem;
+  font-size: var(--status-log-size);
   margin-top: 4px;
+  min-height: 1.2em;
 }
 
 .new-game {
-  margin-top: 10px;
-  padding: 8px 22px;
+  margin-top: var(--gap);
+  padding: var(--badge-pad-y) calc(var(--badge-pad-x) * 2);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   background: var(--gold);
   color: var(--ink);
-  font: 800 1rem "Heebo", Arial, sans-serif;
+  font: 800 var(--name-size) "Heebo", Arial, sans-serif;
 }
 
 /* Face-down card: dark belt-stripe pattern, clearly different from a face-up card */
 .card-back {
-  aspect-ratio: 1131 / 1600;
   border-radius: 8px;
   border: 2px solid var(--belt);
   background: repeating-linear-gradient(45deg, var(--gi-red) 0 8px, var(--mat-dark) 8px 16px);
@@ -173,38 +268,44 @@ h1 {
 .card-back span {
   background: var(--mat-dark);
   color: var(--belt);
-  font-size: 0.72rem;
+  font-size: clamp(0.5rem, 1.3dvh, 0.72rem);
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 .table {
   display: flex;
   justify-content: center;
-  gap: 28px;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(10px, 4dvw, 28px);
+  flex-wrap: nowrap;
 }
 
 .pile {
   text-align: center;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .pile-card {
-  width: 84px;
-  margin: 0 auto 8px;
+  margin: 0 auto var(--badge-pad-y);
+  display: inline-flex;
+}
+
+.pile-card .card,
+.pile-card .card-back {
+  height: var(--pile-h);
+  width: auto;
 }
 
 .pile-card .card-points {
-  font-size: 0.65rem;
-  min-width: 18px;
-  height: 18px;
-  top: 5px;
-  left: 5px;
+  font-size: clamp(0.45rem, 1.1dvh, 0.65rem);
 }
 
 .pile-card .card-back span {
-  font-size: 0.62rem;
+  font-size: clamp(0.4rem, 1dvh, 0.62rem);
   padding: 2px 6px;
 }
 
@@ -220,17 +321,35 @@ h1 {
 }
 
 .pile-count {
-  font-size: 2rem;
+  font-size: var(--pile-count-size);
   font-weight: 800;
+  line-height: 1.1;
 }
 
 .pile-label {
   color: var(--dim);
-  font-size: 0.85rem;
+  font-size: var(--pile-label-size);
+  white-space: nowrap;
 }
 
-@media (max-width: 520px) {
-  .hand {
-    grid-template-columns: repeat(3, minmax(0, 150px));
-  }
+.music-toggle {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(10px, env(safe-area-inset-left));
+  z-index: 10;
+  width: clamp(32px, 8dvh, 42px);
+  height: clamp(32px, 8dvh, 42px);
+  border: 0;
+  border-radius: 50%;
+  background: var(--mat);
+  color: var(--belt);
+  font-size: clamp(0.9rem, 2dvh, 1.2rem);
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.music-toggle:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
 }

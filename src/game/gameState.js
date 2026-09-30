@@ -39,7 +39,17 @@ export function drawCards(gameState, player, count) {
 }
 
 export function createPlayer(id, name) {
-  return { id, name, hand: [], position: Position.STANDING, score: 0 };
+  return {
+    id,
+    name,
+    hand: [],
+    position: Position.STANDING,
+    score: 0,
+    // How many of the opponent's completed turns the current MOUNT_CONTROL
+    // has survived - reset to 0 each time mount is freshly entered. Used to
+    // delay the recurring mount bonus - see gameActions.takeTurnAction.
+    mountControlRoundsHeld: 0,
+  };
 }
 
 export function createGameState() {

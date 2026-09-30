@@ -27,6 +27,8 @@ export const WINNING_SCORE = 15;
 export const CARD_POINTS = Object.freeze({
   TAKEDOWN: 2,
   MOUNT: 4,
+  // Nominal value shown on the card face. The points actually awarded depend
+  // on where you're passing from - see CARD_DEFINITIONS.SIDE_CONTROL.getPoints.
   SIDE_CONTROL: 3,
   ESCAPE_SIDE: 0,
   ESCAPE_MOUNT: 0,
@@ -35,10 +37,19 @@ export const CARD_POINTS = Object.freeze({
   // Cheaper than a direct Mount (4): the recurring MOUNT_CONTROL_BONUS still
   // applies afterward since the result is the same MOUNT_CONTROL position.
   SWEEP: 2,
+  STAND_UP_ATTACK: 0,
+  STAND_UP_DEFENSE: 0,
 });
 
 // Bonus for still holding MOUNT_CONTROL after the opponent's turn ends.
 export const MOUNT_CONTROL_BONUS = 4;
+
+// How many of the opponent's completed turns MOUNT_CONTROL must survive
+// before the recurring bonus starts paying out. 1 means: the first opponent
+// turn after entering mount pays nothing (not immediate), the bonus starts
+// from the opponent's *second* turn onward. Set to 0 to pay from the very
+// first opponent turn, like before.
+export const MOUNT_BONUS_DELAY_TURNS = 1;
 
 // ---------- UI text (Hebrew) ----------
 export const POSITION_LABELS = Object.freeze({
@@ -59,7 +70,7 @@ export const CARD_TEXT = Object.freeze({
   },
   SIDE_CONTROL: {
     displayName: "סייד",
-    ruleText: "היריב על הגב, אתה לא על הגב ← שליטת סייד",
+    ruleText: "היריב על הגב, אתה לא על הגב ← שליטת סייד (מקנה נקודות רק כשעוברים ממצב עמידה/ברכיים)",
   },
   ESCAPE_SIDE: {
     displayName: "יציאה מסייד",
@@ -80,6 +91,14 @@ export const CARD_TEXT = Object.freeze({
   SWEEP: {
     displayName: "סוויפ",
     ruleText: "אתה בשליטת גארד, היריב בתוך גארד ← אתה בשליטת מאונט, היריב על הגב",
+  },
+  STAND_UP_ATTACK: {
+    displayName: "קימה על הרגליים - התקפתי",
+    ruleText: "אתה בשליטת מאונט/סייד/גארד, היריב על הגב ← שניכם על הרגליים",
+  },
+  STAND_UP_DEFENSE: {
+    displayName: "קימה על הרגליים - הגנתי",
+    ruleText: "אתה על הגב, היריב על הרגליים ← שניכם על הרגליים",
   },
 });
 
@@ -111,5 +130,9 @@ export const UI_TEXT = Object.freeze({
     computerDiscarded: "המחשב זרק קלף והחליף",
     computerNoCards: "למחשב אין קלפים",
     mountBonus: (name, points) => `${name} ממשיך לשלוט במאונט (+${points})`,
+  },
+  music: {
+    play: "הפעל מוזיקה",
+    mute: "השתק מוזיקה",
   },
 });
