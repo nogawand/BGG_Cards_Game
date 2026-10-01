@@ -8,13 +8,15 @@
   --dim: #8d9ab8;
 }
 
-/* Lock the page itself so only .app's own layout is ever in play - no
-   page-level scrollbar, no address-bar-driven height jumps. */
+/* מאפשר גלילה מלאה וחופשית בעמוד */
 html, body, #root {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--mat-dark);
 }
 
 *, *::before, *::after {
@@ -22,30 +24,28 @@ html, body, #root {
 }
 
 .app {
-  --gap: clamp(2px, 0.6dvh, 8px);
-  --pad-y: clamp(2px, 0.5dvh, 8px);
-  --pad-x: clamp(6px, 1.5vw, 12px);
-  --title-size: clamp(0.8rem, 2dvh, 1.3rem);
-  --name-size: clamp(0.75rem, 1.6dvh, 1rem);
-  --badge-size: clamp(0.6rem, 1.3dvh, 0.85rem);
-  --badge-pad-y: clamp(2px, 0.4dvh, 3px);
-  --badge-pad-x: clamp(4px, 1.2dvw, 10px);
+  --gap: clamp(6px, 1dvh, 12px);
+  --pad-y: clamp(12px, 2dvh, 24px);
+  --pad-x: clamp(8px, 2vw, 16px);
+  --title-size: clamp(1rem, 2.5dvh, 1.4rem);
+  --name-size: clamp(0.8rem, 1.6dvh, 1.1rem);
+  --badge-size: clamp(0.65rem, 1.3dvh, 0.9rem);
+  --badge-pad-y: clamp(3px, 0.5dvh, 5px);
+  --badge-pad-x: clamp(6px, 1.2dvw, 12px);
   
-  --card-h: clamp(80px, 22dvh, 180px); 
-  --pile-h: clamp(80px, 18dvh, 140px);
+  --card-h: clamp(100px, 20dvh, 160px); 
+  --pile-h: clamp(90px, 16dvh, 130px);
 
-
-  --pile-count-size: clamp(0.9rem, 2.2dvh, 1.6rem);
-  --pile-label-size: clamp(0.55rem, 1.1dvh, 0.75rem);
-  --status-size: clamp(0.8rem, 1.8dvh, 1rem);
-  --status-log-size: clamp(0.65rem, 1.3dvh, 0.8rem);
+  --pile-count-size: clamp(1rem, 2.2dvh, 1.6rem);
+  --pile-label-size: clamp(0.6rem, 1.1dvh, 0.8rem);
+  --status-size: clamp(0.85rem, 1.8dvh, 1.1rem);
+  --status-log-size: clamp(0.7rem, 1.3dvh, 0.85rem);
 
   direction: rtl;
   position: relative;
-  height: 100dvh;
+  min-height: 100vh;
   width: 100vw;
   max-width: 100%;
-  overflow: hidden;
   padding: var(--pad-y) var(--pad-x);
   background: var(--mat-dark);
   color: var(--belt);
@@ -67,26 +67,30 @@ h1 {
 main {
   width: 100%;
   max-width: 900px;
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   gap: var(--gap);
-  /* Safety net, not the primary mechanism: the clamp()s above are sized so
-     everything fits without this ever engaging on realistic screens. If an
-     extreme viewport still doesn't fit, a quiet scroll here is better than
-     silently clipped/hidden content. */
-  overflow-y: auto;
+  /* מסיר את הדחיסה המקורית כדי לאפשר לעמוד לגדול ולגלוש באופן טבעי */
+  flex: 0 1 auto;
+  padding-bottom: 20px;
 }
 
-.player,.table{
+.player, .table {
   background: var(--mat);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: var(--pad-y) var(--pad-x);
+  width: 100%;
   flex-shrink: 0;
 }
-
+.player {
+  background: var(--mat);
+  border-radius: 12px;
+  padding: var(--pad-y) var(--pad-x);
+  width: 100%;
+  flex-shrink: 0;
+  overflow: visible; /* חשוב כדי שהגלילה לא תיחתך במסגרת */
+}
 .player-head {
   display: flex;
   justify-content: space-between;
@@ -101,10 +105,6 @@ main {
   min-width: 0;
 }
 
-/* The computer's row mirrors the human's row (row-reverse), so its position
-   and score badges land on the opposite side from the human's - much easier
-   to tell "whose status is whose" at a glance than two identically-ordered
-   rows. */
 .player.opponent .player-head {
   flex-direction: row-reverse;
 }
@@ -133,23 +133,27 @@ main {
   font-size: var(--badge-size);
   white-space: nowrap;
 }
-
-/* A single row of up to 5 cards. Height comes from --card-h (dvh-driven);
-   width follows from the card's own aspect-ratio, then gets capped by
-   max-width so 5 of them can never overflow the row horizontally either -
-   whichever dimension is tighter wins, so the cards shrink to fit both the
-   available height AND the available width. */
 .hand {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
+  flex-wrap: wrap; /* שומר על שתי שורות מסודרות */
+  justify-content: center; /* מרכז את הקלפים יפה באמצע */
   align-items: flex-start;
-  gap: clamp(3px, 1dvw, 8px);
+  gap: 8px; /* רווח נעים ומאוזן בין הקלפים */
   width: 100%;
+  padding: 4px 8px;
+  overflow: visible;
 }
-/*The our player cards*/
+
+.hand .card,
+.hand .card-back {
+  flex: 0 0 auto;
+  height: var(--card-h); /* מחזיר את הגובה המקורי והטוב */
+  width: auto; /* מחזיר את הרוחב המקורי לפי יחס התמונה המקורי בלי למתוח */
+  max-width: none;
+}
+
 .you-hand-container .card { 
-  height: 190px; 
+  height: var(--card-h); 
 }
 
 .card,
@@ -157,14 +161,8 @@ main {
   aspect-ratio: 1131 / 1600;
   height: var(--card-h);
   width: auto;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
 }
-
-.hand .card,
-.hand .card-back {
-  max-width: calc((100% - 4 * clamp(3px, 1dvw, 8px)) / 5);
-}
-
 .card {
   position: relative;
   border-radius: 8px;
@@ -220,6 +218,7 @@ main {
 .status {
   text-align: center;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .status-turn {
@@ -246,7 +245,26 @@ main {
   font: 800 var(--name-size) "Heebo", Arial, sans-serif;
 }
 
-/* Face-down card: dark belt-stripe pattern, clearly different from a face-up card */
+/* כפתור הסקראמבל */
+.player button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: var(--name-size);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.player button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .card-back {
   border-radius: 8px;
   border: 2px solid var(--belt);
@@ -292,15 +310,6 @@ main {
   width: auto;
 }
 
-.pile-card .card-points {
-  font-size: clamp(0.45rem, 1.1dvh, 0.65rem);
-}
-
-.pile-card .card-back span {
-  font-size: clamp(0.4rem, 1dvh, 0.62rem);
-  padding: 2px 6px;
-}
-
 .card-back.pile-empty {
   background: var(--mat-dark);
   border-style: dashed;
@@ -339,9 +348,4 @@ main {
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.music-toggle:focus-visible {
-  outline: 3px solid var(--gold);
-  outline-offset: 2px;
 }
