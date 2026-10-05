@@ -42,8 +42,8 @@ export default function PlayerArea({ player, opponent, gameState, onPlayCard, on
   style={{ marginTop: '8px' }}
 >
   {player.scrambleCount >= 3 
-    ? "נגמרו החלפות היד" 
-    : `החלף יד (סקראמבל ${player.scrambleCount}/3)`}
+    ? UI_TEXT.scrambleButton.noMore 
+    : UI_TEXT.scrambleButton.active(player.scrambleCount, 3)}
 </button>
         </>
       )}

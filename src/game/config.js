@@ -1,8 +1,3 @@
-// ============================================================
-// Game configuration: every constant number and every UI word.
-// Code identifiers and state IDs stay in English; UI text is Hebrew.
-// ============================================================
-
 // ---------- State IDs ----------
 export const Position = Object.freeze({
   STANDING: "STANDING",
@@ -141,9 +136,14 @@ export const UI_TEXT = Object.freeze({
     computerDiscarded: "המחשב זרק קלף והחליף",
     computerNoCards: "למחשב אין קלפים",
     mountBonus: (name, points) => `${name} ממשיך לשלוט במאונט (+${points})`,
+    scramble: (name, current, max) => `${name} ביצע סקראמבל והחליף את היד! (${current}/${max})`,
   },
   music: {
     play: "הפעל מוזיקה",
     mute: "השתק מוזיקה",
+  },
+  scrambleButton: {
+    noMore: "נגמרו החלפות היד",
+    active: (current, max) => `החלף יד (סקראמבל ${current}/${max})`,
   },
 });

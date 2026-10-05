@@ -35,7 +35,7 @@ export function playCard(gameState, playerId, cardInstanceId) {
   player.position = result.myState;
   opponent.position = result.opponentState;
   
-  // כאן מועברים הניקוד הממתין והגדרת המאונט
+  // Pass the pending score and mount set
   applyMountControlEntry(player, result.myState, fromMyState, definition.points);
   applyMountControlEntry(opponent, result.opponentState, fromOpponentState, definition.points);
 
@@ -85,26 +85,26 @@ export function takeTurnAction(gameState, playerId, cardInstanceId) {
     return false;
   }
 
-  // Win check אחרי הפעולה בתור
+  // Win check after the turn
   const winner = gameState.players.find((p) => p.score >= WINNING_SCORE);
   if (winner) {
     gameState.winnerId = winner.id;
     return true;
   }
 
-  // העברת התור ליריב
+  // Pass turn to opponent
   gameState.currentPlayerId = opponent.id;
 
-  // 🎯 בדיקה מיידית בתחילת התור הבא (כשהתור חוזר לשחקן המקורי או כשהיריב מתחיל את תורו):
-  // אם השחקן הקודם מחזיק מאונט (שעכשיו הפך ליריב מבחינת התור) ויש לו נקודות ממתינות, 
-  // סימן שהיריב סיים את התור שלו ולא ברח – ולכן נקודות המאונט משתחררות מיד!
+  // Immediate check at the start of the next turn:
+  // If the previous player holds a Mount and has pending points,
+  // and the opponent finishes their turn without escaped from Mount, points are released.
   if (player.position === Position.MOUNT_CONTROL && player.pendingMountPoints > 0) {
     const mountPoints = player.pendingMountPoints;
     player.score += mountPoints;
     player.pendingMountPoints = 0;
     gameState.lastActionText += " | " + UI_TEXT.log.mountBonus(player.name, mountPoints);
 
-    // בדיקת ניצחון נוספת אם הבונוס הביא אותך לניצחון
+    // Another win check after the bonus
     const bonusWinner = gameState.players.find((p) => p.score >= WINNING_SCORE);
     if (bonusWinner) {
       gameState.winnerId = bonusWinner.id;
@@ -145,7 +145,7 @@ export function scrambleHand(gameState, playerId) {
   drawCards(gameState, player, HAND_SIZE);
   
   player.scrambleCount += 1;
-  gameState.lastActionText = `${player.name} ביצע סקראמבל והחליף את היד! (${player.scrambleCount}/3)`;
+  gameState.lastActionText = UI_TEXT.log.scramble(player.name, player.scrambleCount, 3);
   
   return true;
 }

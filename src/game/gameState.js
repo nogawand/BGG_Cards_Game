@@ -19,7 +19,7 @@ export function createDeck() {
   return deck;
 }
 
-// Fisher-Yates, returns a new array
+// Returns a new array
 export function shuffle(cards) {
   const result = [...cards];
   for (let i = result.length - 1; i > 0; i--) {
@@ -36,7 +36,7 @@ export function drawCards(gameState, player, count) {
       gameState.drawPile = shuffle(gameState.discardPile);
       gameState.discardPile = [];
     }
-    if (gameState.drawPile.length === 0) return; // nothing left anywhere
+    if (gameState.drawPile.length === 0) return; 
     player.hand.push(gameState.drawPile.pop());
   }
 }

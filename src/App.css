@@ -8,7 +8,7 @@
   --dim: #8d9ab8;
 }
 
-/* מאפשר גלילה מלאה וחופשית בעמוד */
+/* enables full and free scrolling */
 html, body, #root {
   min-height: 100%;
   margin: 0;
@@ -71,7 +71,7 @@ main {
   flex-direction: column;
   align-items: center;
   gap: var(--gap);
-  /* מסיר את הדחיסה המקורית כדי לאפשר לעמוד לגדול ולגלוש באופן טבעי */
+  /* enables scrolling*/
   flex: 0 1 auto;
   padding-bottom: 20px;
 }
@@ -89,7 +89,7 @@ main {
   padding: var(--pad-y) var(--pad-x);
   width: 100%;
   flex-shrink: 0;
-  overflow: visible; /* חשוב כדי שהגלילה לא תיחתך במסגרת */
+  overflow: visible;
 }
 .player-head {
   display: flex;
@@ -135,10 +135,10 @@ main {
 }
 .hand {
   display: flex;
-  flex-wrap: wrap; /* שומר על שתי שורות מסודרות */
-  justify-content: center; /* מרכז את הקלפים יפה באמצע */
+  flex-wrap: wrap;
+  justify-content: center; 
   align-items: flex-start;
-  gap: 8px; /* רווח נעים ומאוזן בין הקלפים */
+  gap: 8px;
   width: 100%;
   padding: 4px 8px;
   overflow: visible;
@@ -147,8 +147,8 @@ main {
 .hand .card,
 .hand .card-back {
   flex: 0 0 auto;
-  height: var(--card-h); /* מחזיר את הגובה המקורי והטוב */
-  width: auto; /* מחזיר את הרוחב המקורי לפי יחס התמונה המקורי בלי למתוח */
+  height: var(--card-h);
+  width: auto;
   max-width: none;
 }
 
@@ -245,7 +245,7 @@ main {
   font: 800 var(--name-size) "Heebo", Arial, sans-serif;
 }
 
-/* כפתור הסקראמבל */
+/* scrumble buttun */
 .player button {
   margin-top: 10px;
   width: 100%;

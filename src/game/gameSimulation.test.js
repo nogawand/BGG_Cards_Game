@@ -1,7 +1,6 @@
 import { createGameState } from "./gameState.js";
 import { takeTurnAction, getLegalCards, scrambleHand } from "./gameActions.js";
-import { CARD_DEFINITIONS } from "./cardDefinitions.js";
-import { WINNING_SCORE, COMPUTER_ID, HUMAN_ID } from "./config.js";
+import { WINNING_SCORE, HUMAN_ID } from "./config.js";
 
 function simulateSingleGame() {
   const gameState = createGameState();
@@ -21,19 +20,18 @@ function simulateSingleGame() {
     const legalCards = getLegalCards(player, opponent);
 
     if (legalCards.length > 0) {
-      // בוחרים קלף חוקי רנדומלי (או לפי לוגיקה)
+      // Selecting a random legal card
       const chosenCard = legalCards[Math.floor(Math.random() * legalCards.length)];
       
-      // ספירת שימוש בקלף
       cardPlayCounts[chosenCard.definitionId] = (cardPlayCounts[chosenCard.definitionId] || 0) + 1;
 
       takeTurnAction(gameState, currentPlayerId, chosenCard.instanceId);
     } else {
-      // אין קלפים חוקיים! בודקים אם אפשר לבצע סקראמבל (עד 3 פעמים)
+      // There are no legal card, check option to scrumble 
       if (player.scrambleCount < 3) {
         scrambleHand(gameState, player.id);
       } else {
-        // אם נגמרו הסקראמבלים, זורקים את הקלף הראשון ביד כמו קודם
+        // If no scrumbles remain, discard a card
         const cardToDiscard = player.hand[0];
         if (cardToDiscard) {
           const cardIndex = player.hand.findIndex((c) => c.instanceId === cardToDiscard.instanceId);
@@ -45,11 +43,11 @@ function simulateSingleGame() {
         }
       }
       
-      // מעבר תור ליריב אם נתקענו
+      // Pass the turn to the opponent
       gameState.currentPlayerId = opponent.id;
     }
 
-    // בדיקת ניצחון
+    // Win check
     const winner = gameState.players.find((p) => p.score >= WINNING_SCORE);
     if (winner) {
       gameState.winnerId = winner.id;
